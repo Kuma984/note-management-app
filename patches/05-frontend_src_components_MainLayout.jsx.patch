@@ -1,0 +1,20 @@
+--- a/frontend/src/components/MainLayout.jsx
++++ b/frontend/src/components/MainLayout.jsx
+@@ -2,6 +2,7 @@
+ import { Outlet } from 'react-router-dom';
+ import Navbar from './Navbar';
+ import Sidebar from './Sidebar';
++import AdvancedHost from '../features/advanced/AdvancedHost';
+ 
+ export default function MainLayout() {
+   const user = JSON.parse(localStorage.getItem('user') || 'null');
+@@ -24,6 +25,9 @@
+           <Outlet />
+         </main>
+       </div>
++
++      {/* Member 3: note password dialog, share notice, Ask AI, offline banner */}
++      <AdvancedHost />
+     </div>
+   );
+ }

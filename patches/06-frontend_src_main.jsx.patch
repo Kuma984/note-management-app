@@ -1,0 +1,14 @@
+--- a/frontend/src/main.jsx
++++ b/frontend/src/main.jsx
+@@ -7,6 +7,11 @@
+ import 'bootstrap-icons/font/bootstrap-icons.css';
+ import './index.css';
+ 
++// Member 3: offline support (IndexedDB cache + sync queue + service worker)
++import { initOffline } from './offline';
++
++initOffline();
++
+ ReactDOM.createRoot(document.getElementById('root')).render(
+   <React.StrictMode>
+     <App />

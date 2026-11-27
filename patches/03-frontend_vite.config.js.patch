@@ -1,0 +1,14 @@
+--- a/frontend/vite.config.js
++++ b/frontend/vite.config.js
+@@ -14,6 +14,11 @@
+       '/uploads': {
+         target: 'http://localhost:5000',
+         changeOrigin: true
++      },
++      // Member 3: WebSocket for real-time collaboration (relative URL, no hardcoded host in the code)
++      '/ws': {
++        target: 'http://localhost:5000',
++        ws: true
+       }
+     }
+   }

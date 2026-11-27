@@ -1,0 +1,21 @@
+--- a/frontend/src/App.jsx
++++ b/frontend/src/App.jsx
+@@ -4,6 +4,8 @@
+ import Login from './features/auth/Login';
+ import Register from './features/auth/Register';
+ import NoteList from './features/notes/NoteList';
++import SharedWithMe from './features/advanced/share/SharedWithMe';
++import SharedNoteEditor from './features/advanced/share/SharedNoteEditor';
+ 
+ // Route guard: Redirect to /login if user is not authenticated (as required in rubric)
+ function ProtectedRoute({ children }) {
+@@ -32,7 +34,8 @@
+         >
+           <Route path="/" element={<NoteList />} />
+           <Route path="/pinned" element={<NoteList />} />
+-          <Route path="/shared" element={<NoteList />} />
++          <Route path="/shared" element={<SharedWithMe />} />
++          <Route path="/shared/:id" element={<SharedNoteEditor />} />
+           <Route path="/labels" element={<NoteList />} />
+           <Route path="/preferences" element={<div className="p-3"><h4>Preferences</h4><p className="text-muted">Preferences screen for theme and font size.</p></div>} />
+         </Route>

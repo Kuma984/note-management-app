@@ -1,0 +1,117 @@
+--- a/backend/src/app.js
++++ b/backend/src/app.js
+@@ -3,6 +3,7 @@
+ const path = require('path');
+ const dotenv = require('dotenv');
+ const { testConnection } = require('./config/db');
++const advanced = require('./modules/advanced'); // Member 3: note lock, sharing, AI, realtime
+ 
+ dotenv.config();
+ 
+@@ -17,6 +18,9 @@
+ // Serve static uploads (avatars & attachments)
+ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+ 
++// Member 3: REST routes (note password, sharing, AI summary / Q&A)
++advanced.mountRoutes(app);
++
+ // Health check endpoint
+ app.get('/api/health', (req, res) => {
+     res.status(200).json({
+@@ -27,10 +31,13 @@
+ });
+ 
+ // Start listening and verify DB connection
+-app.listen(PORT, async () => {
++const server = app.listen(PORT, async () => {
+     console.log(`Server is running on port ${PORT}`);
+     console.log(`API Base URL: http://localhost:${PORT}/api`);
+     await testConnection();
+ });
+ 
++// Member 3: real-time collaboration over WebSocket (path /ws)
++advanced.attachRealtime(server);
++
+ module.exports = app;
+\ No newline at end of file
+--- a/backend/package.json
++++ b/backend/package.json
+@@ -23,7 +23,8 @@
+     "jsonwebtoken": "^9.0.3",
+     "multer": "^2.5.0",
+     "mysql2": "^3.24.6",
+-    "nodemailer": "^10.6.1"
++    "nodemailer": "^10.6.1",
++    "ws": "^8.18.0"
+   },
+   "devDependencies": {
+     "nodemon": "^3.1.14"
+--- a/frontend/vite.config.js
++++ b/frontend/vite.config.js
+@@ -14,6 +14,11 @@
+       '/uploads': {
+         target: 'http://localhost:5000',
+         changeOrigin: true
++      },
++      // Member 3: WebSocket for real-time collaboration (relative URL, no hardcoded host in the code)
++      '/ws': {
++        target: 'http://localhost:5000',
++        ws: true
+       }
+     }
+   }
+--- a/frontend/src/App.jsx
++++ b/frontend/src/App.jsx
+@@ -4,6 +4,8 @@
+ import Login from './features/auth/Login';
+ import Register from './features/auth/Register';
+ import NoteList from './features/notes/NoteList';
++import SharedWithMe from './features/advanced/share/SharedWithMe';
++import SharedNoteEditor from './features/advanced/share/SharedNoteEditor';
+ 
+ // Route guard: Redirect to /login if user is not authenticated (as required in rubric)
+ function ProtectedRoute({ children }) {
+@@ -32,7 +34,8 @@
+         >
+           <Route path="/" element={<NoteList />} />
+           <Route path="/pinned" element={<NoteList />} />
+-          <Route path="/shared" element={<NoteList />} />
++          <Route path="/shared" element={<SharedWithMe />} />
++          <Route path="/shared/:id" element={<SharedNoteEditor />} />
+           <Route path="/labels" element={<NoteList />} />
+           <Route path="/preferences" element={<div className="p-3"><h4>Preferences</h4><p className="text-muted">Preferences screen for theme and font size.</p></div>} />
+         </Route>
+--- a/frontend/src/components/MainLayout.jsx
++++ b/frontend/src/components/MainLayout.jsx
+@@ -2,6 +2,7 @@
+ import { Outlet } from 'react-router-dom';
+ import Navbar from './Navbar';
+ import Sidebar from './Sidebar';
++import AdvancedHost from '../features/advanced/AdvancedHost';
+ 
+ export default function MainLayout() {
+   const user = JSON.parse(localStorage.getItem('user') || 'null');
+@@ -24,6 +25,9 @@
+           <Outlet />
+         </main>
+       </div>
++
++      {/* Member 3: note password dialog, share notice, Ask AI, offline banner */}
++      <AdvancedHost />
+     </div>
+   );
+ }
+--- a/frontend/src/main.jsx
++++ b/frontend/src/main.jsx
+@@ -7,6 +7,11 @@
+ import 'bootstrap-icons/font/bootstrap-icons.css';
+ import './index.css';
+ 
++// Member 3: offline support (IndexedDB cache + sync queue + service worker)
++import { initOffline } from './offline';
++
++initOffline();
++
+ ReactDOM.createRoot(document.getElementById('root')).render(
+   <React.StrictMode>
+     <App />

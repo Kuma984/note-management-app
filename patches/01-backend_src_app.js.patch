@@ -1,0 +1,36 @@
+--- a/backend/src/app.js
++++ b/backend/src/app.js
+@@ -3,6 +3,7 @@
+ const path = require('path');
+ const dotenv = require('dotenv');
+ const { testConnection } = require('./config/db');
++const advanced = require('./modules/advanced'); // Member 3: note lock, sharing, AI, realtime
+ 
+ dotenv.config();
+ 
+@@ -17,6 +18,9 @@
+ // Serve static uploads (avatars & attachments)
+ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+ 
++// Member 3: REST routes (note password, sharing, AI summary / Q&A)
++advanced.mountRoutes(app);
++
+ // Health check endpoint
+ app.get('/api/health', (req, res) => {
+     res.status(200).json({
+@@ -27,10 +31,13 @@
+ });
+ 
+ // Start listening and verify DB connection
+-app.listen(PORT, async () => {
++const server = app.listen(PORT, async () => {
+     console.log(`Server is running on port ${PORT}`);
+     console.log(`API Base URL: http://localhost:${PORT}/api`);
+     await testConnection();
+ });
+ 
++// Member 3: real-time collaboration over WebSocket (path /ws)
++advanced.attachRealtime(server);
++
+ module.exports = app;
+\ No newline at end of file

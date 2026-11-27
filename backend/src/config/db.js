@@ -12,8 +12,11 @@ const pool = mysql.createPool({
     database: process.env.DB_NAME || 'note_app_db',
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0
+    queueLimit: 0,
+    timezone: 'Z'
 });
+
+pool.pool.on('connection', connection => connection.query("SET time_zone = '+00:00'"));
 
 // Helper function to test DB connectivity on startup
 async function testConnection() {

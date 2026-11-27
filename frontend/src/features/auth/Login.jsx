@@ -53,7 +53,10 @@ export default function Login() {
             </div>
 
             <div className="mb-3">
-              <label className="form-label small fw-semibold">Password</label>
+              <div className="d-flex justify-content-between align-items-center">
+                <label className="form-label small fw-semibold mb-1">Password</label>
+                <Link to="/forgot-password" className="small text-decoration-none">Forgot password?</Link>
+              </div>
               <input
                 type="password"
                 className="form-control"

@@ -3,9 +3,13 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from './components/MainLayout';
 import Login from './features/auth/Login';
 import Register from './features/auth/Register';
+import ForgotPassword from './features/auth/ForgotPassword';
+import VerifyEmail from './features/auth/VerifyEmail';
+import Profile from './features/auth/Profile';
+import Preferences from './features/auth/Preferences';
 import NoteList from './features/notes/NoteList';
 
-// Route guard: Redirect to /login if user is not authenticated (as required in rubric)
+// Redirect unauthenticated users to /login immediately
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem('token');
   if (!token) {
@@ -18,11 +22,13 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public authentication routes */}
+        {/* Public routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/verify/:token" element={<VerifyEmail />} />
 
-        {/* Protected application shell */}
+        {/* Protected routes */}
         <Route
           element={
             <ProtectedRoute>
@@ -34,7 +40,8 @@ export default function App() {
           <Route path="/pinned" element={<NoteList />} />
           <Route path="/shared" element={<NoteList />} />
           <Route path="/labels" element={<NoteList />} />
-          <Route path="/preferences" element={<div className="p-3"><h4>Preferences</h4><p className="text-muted">Preferences screen for theme and font size.</p></div>} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/preferences" element={<Preferences />} />
         </Route>
 
         {/* Fallback */}

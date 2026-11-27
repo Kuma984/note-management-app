@@ -2,7 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const dotenv = require('dotenv');
-const { testConnection } = require('./config/db');
+const db = require('./config/db');
+const authRoutes = require('./modules/auth/authRoutes');
 
 dotenv.config();
 
@@ -17,6 +18,9 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static uploads (avatars & attachments)
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
+// Routes
+app.use('/api/auth', authRoutes);
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
     res.status(200).json({
@@ -30,7 +34,7 @@ app.get('/api/health', (req, res) => {
 app.listen(PORT, async () => {
     console.log(`Server is running on port ${PORT}`);
     console.log(`API Base URL: http://localhost:${PORT}/api`);
-    await testConnection();
+    await db.testConnection();
 });
 
 module.exports = app;

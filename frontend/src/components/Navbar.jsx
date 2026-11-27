@@ -1,19 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import api from '../services/api';
 
-export default function Navbar() {
+export default function Navbar({ onToggleSidebar }) {
   const navigate = useNavigate();
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
   const user = JSON.parse(localStorage.getItem('user') || 'null');
 
-  // Toggle light/dark theme using Bootstrap 5.3 data-bs-theme
   useEffect(() => {
     document.documentElement.setAttribute('data-bs-theme', theme);
     localStorage.setItem('theme', theme);
   }, [theme]);
 
-  const toggleTheme = () => {
-    setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+  const toggleTheme = async () => {
+    const nextTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(nextTheme);
+
+    if (localStorage.getItem('token')) {
+      try {
+        await api.put('/auth/preferences', {
+          theme: nextTheme,
+          font_size: localStorage.getItem('font_size') || 'medium',
+          note_color: localStorage.getItem('note_color') || '#ffffff'
+        });
+      } catch (err) {
+        // Non-blocking preference sync
+      }
+    }
   };
 
   const handleLogout = () => {
@@ -25,13 +38,25 @@ export default function Navbar() {
   return (
     <nav className="navbar navbar-expand bg-body-tertiary border-bottom px-3 sticky-top">
       <div className="container-fluid">
-        {/* Brand */}
-        <Link className="navbar-brand fw-bold text-primary" to="/">
-          <i className="bi bi-journal-text me-2"></i>NoteApp
-        </Link>
+        <div className="d-flex align-items-center gap-2">
+          {/* Mobile menu button */}
+          <button
+            type="button"
+            className="btn btn-outline-secondary btn-sm d-md-none"
+            onClick={onToggleSidebar}
+            title="Menu"
+          >
+            <i className="bi bi-list fs-5"></i>
+          </button>
 
-        {/* Live Search placeholder (Member 2 will hook up live debounce) */}
-        <div className="d-none d-sm-block mx-auto" style={{ width: '380px' }}>
+          {/* Brand */}
+          <Link className="navbar-brand fw-bold text-primary mb-0" to="/">
+            <i className="bi bi-journal-text me-2"></i>NoteApp
+          </Link>
+        </div>
+
+        {/* Live Search placeholder */}
+        <div className="d-none d-sm-block mx-auto" style={{ width: '360px' }}>
           <div className="input-group input-group-sm">
             <span className="input-group-text bg-body border-end-0">
               <i className="bi bi-search text-secondary"></i>
@@ -46,7 +71,6 @@ export default function Navbar() {
 
         {/* Actions */}
         <div className="d-flex align-items-center gap-2">
-          {/* Dark / Light Toggle */}
           <button
             type="button"
             className="btn btn-outline-secondary btn-sm"
@@ -56,19 +80,33 @@ export default function Navbar() {
             <i className={`bi ${theme === 'dark' ? 'bi-sun-fill text-warning' : 'bi-moon-stars-fill'}`}></i>
           </button>
 
-          {/* User section */}
           {user ? (
-            <div className="dropdown">
-              <button
-                className="btn btn-sm btn-outline-primary dropdown-toggle d-flex align-items-center gap-1"
-                type="button"
-                data-bs-toggle="dropdown"
-                onClick={handleLogout}
-                title="Click to logout"
+            <div className="d-flex align-items-center gap-2">
+              <Link
+                to="/profile"
+                className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2"
+                title="View Profile"
               >
-                <i className="bi bi-person-circle"></i>
+                {user.avatar_url ? (
+                  <img
+                    src={user.avatar_url}
+                    alt="Avatar"
+                    className="rounded-circle object-fit-cover"
+                    style={{ width: '22px', height: '22px' }}
+                  />
+                ) : (
+                  <i className="bi bi-person-circle"></i>
+                )}
                 <span className="d-none d-md-inline">{user.display_name || user.email}</span>
-                <span className="badge text-bg-danger ms-1">Logout</span>
+              </Link>
+
+              <button
+                type="button"
+                className="btn btn-sm btn-outline-danger"
+                onClick={handleLogout}
+                title="Logout"
+              >
+                <i className="bi bi-box-arrow-right"></i>
               </button>
             </div>
           ) : (

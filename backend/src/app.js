@@ -1,8 +1,8 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 const dotenv = require('dotenv');
-const { testConnection } = require('./config/db');
+const { pool, testConnection } = require('./config/db');
+const { installNotes } = require('./modules/notes/install');
 
 dotenv.config();
 
@@ -14,8 +14,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static uploads (avatars & attachments)
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+// Attachments must pass note ownership/share/lock checks; never expose uploads statically.
+installNotes(app, pool);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

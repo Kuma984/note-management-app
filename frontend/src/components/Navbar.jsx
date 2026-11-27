@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import { useNotesSearch } from '../features/notes/NotesSearchContext';
 
 export default function Navbar({ onToggleSidebar }) {
   const navigate = useNavigate();
+  const { query, setQuery } = useNotesSearch();
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
   const user = JSON.parse(localStorage.getItem('user') || 'null');
 
@@ -55,14 +57,18 @@ export default function Navbar({ onToggleSidebar }) {
           </Link>
         </div>
 
-        {/* Live Search placeholder */}
-        <div className="d-none d-sm-block mx-auto" style={{ width: '360px' }}>
+        {/* Live Search */}
+        <div className="d-none d-sm-block mx-auto" style={{ width: 'min(380px, 40vw)' }}>
           <div className="input-group input-group-sm">
             <span className="input-group-text bg-body border-end-0">
               <i className="bi bi-search text-secondary"></i>
             </span>
             <input
               type="text"
+              aria-label="Tìm tiêu đề hoặc nội dung ghi chú"
+              value={query}
+              maxLength={200}
+              onChange={event => setQuery(event.target.value)}
               className="form-control border-start-0"
               placeholder="Search notes by keyword..."
             />

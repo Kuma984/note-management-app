@@ -4,6 +4,7 @@ const path = require('path');
 const dotenv = require('dotenv');
 const db = require('./config/db');
 const authRoutes = require('./modules/auth/authRoutes');
+const { installNotes } = require('./modules/notes/install');
 
 dotenv.config();
 
@@ -15,11 +16,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static uploads (avatars & attachments)
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+// Serve only user avatars statically; note attachments pass ownership/share/lock checks
+app.use('/uploads/avatars', express.static(path.join(__dirname, '../uploads/avatars')));
 
 // Routes
 app.use('/api/auth', authRoutes);
+installNotes(app, db);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

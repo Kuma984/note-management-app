@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 import api from '../services/api';
+import { NotesSearchProvider } from '../features/notes/NotesSearchContext';
 
 export default function MainLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -32,23 +33,25 @@ export default function MainLayout() {
   }, []);
 
   return (
-    <div className="d-flex flex-column min-vh-100">
-      <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+    <NotesSearchProvider>
+      <div className="d-flex flex-column min-vh-100">
+        <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
 
-      {/* Prominent notification when account is unverified */}
-      {user && user.is_verified === false && (
-        <div className="alert alert-warning text-center rounded-0 mb-0 py-2 small" role="alert">
-          <i className="bi bi-exclamation-triangle-fill me-2"></i>
-          Your account is unverified. Please check your email to complete the activation process.
+        {/* Prominent notification when account is unverified */}
+        {user && user.is_verified === false && (
+          <div className="alert alert-warning text-center rounded-0 mb-0 py-2 small" role="alert">
+            <i className="bi bi-exclamation-triangle-fill me-2"></i>
+            Your account is unverified. Please check your email to complete the activation process.
+          </div>
+        )}
+
+        <div className="d-flex flex-grow-1">
+          <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+          <main className="flex-grow-1 p-3 p-md-4 bg-body" style={{ minWidth: 0 }}>
+            <Outlet />
+          </main>
         </div>
-      )}
-
-      <div className="d-flex flex-grow-1">
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <main className="flex-grow-1 p-4 bg-body">
-          <Outlet />
-        </main>
       </div>
-    </div>
+    </NotesSearchProvider>
   );
 }

@@ -8,9 +8,9 @@ USE `note_app_db`;
 -- Insert verified test user
 INSERT INTO `users` (`id`, `email`, `password_hash`, `display_name`, `avatar_url`, `is_verified`, `created_at`)
 VALUES 
-(1, 'student1@tdtu.edu.vn', '$2b$10$wE96c1B6uL3kKkP.8zX/fe55q1e1vj.63BwT7uE7G4kH4yKxKjYm2', 'Nguyen Van A', NULL, TRUE, NOW()),
-(2, 'student2@tdtu.edu.vn', '$2b$10$wE96c1B6uL3kKkP.8zX/fe55q1e1vj.63BwT7uE7G4kH4yKxKjYm2', 'Tran Thi B', NULL, TRUE, NOW()),
-(3, 'unverified@tdtu.edu.vn', '$2b$10$wE96c1B6uL3kKkP.8zX/fe55q1e1vj.63BwT7uE7G4kH4yKxKjYm2', 'Le Van C', NULL, FALSE, NOW())
+(1, 'student1@tdtu.edu.vn', '$2b$10$w8sebs52t6NwarnF6wiqIe0QEyf105ICYIVpF0zZIJX2UVLHIixWi', 'Nguyen Van A', NULL, TRUE, NOW()),
+(2, 'student2@tdtu.edu.vn', '$2b$10$w8sebs52t6NwarnF6wiqIe0QEyf105ICYIVpF0zZIJX2UVLHIixWi', 'Tran Thi B', NULL, TRUE, NOW()),
+(3, 'unverified@tdtu.edu.vn', '$2b$10$w8sebs52t6NwarnF6wiqIe0QEyf105ICYIVpF0zZIJX2UVLHIixWi', 'Le Van C', NULL, FALSE, NOW())
 ON DUPLICATE KEY UPDATE `email` = VALUES(`email`);
 
 -- Insert preferences for user 1
@@ -32,7 +32,7 @@ INSERT INTO `notes` (`id`, `user_id`, `title`, `content`, `is_pinned`, `pinned_a
 VALUES 
 (1, 1, 'Web Programming Final Project Requirements', 'Must comply strictly with red-highlighted requirements: Relative URLs, 4 consecutive weeks on GitHub, and unified add/edit interface.', TRUE, NOW(), NULL, FALSE, NOW(), NOW()),
 (2, 1, 'Daily Meeting Notes', 'Team synced on MySQL database schema and authentication architecture.', FALSE, NULL, NULL, FALSE, NOW(), NOW()),
-(3, 1, 'Personal Secret Note', 'This is a protected note containing private credentials.', FALSE, NULL, '$2b$10$wE96c1B6uL3kKkP.8zX/fe55q1e1vj.63BwT7uE7G4kH4yKxKjYm2', TRUE, NOW(), NOW())
+(3, 1, 'Personal Secret Note', 'This is a protected note containing private credentials.', FALSE, NULL, '$2b$10$w8sebs52t6NwarnF6wiqIe0QEyf105ICYIVpF0zZIJX2UVLHIixWi', TRUE, NOW(), NOW())
 ON DUPLICATE KEY UPDATE `title` = VALUES(`title`);
 
 -- Attach labels to notes

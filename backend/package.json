@@ -5,7 +5,10 @@
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",
-    "dev": "nodemon src/app.js"
+    "dev": "nodemon src/app.js",
+    "notes:dev": "node src/modules/notes/dev-server.js",
+    "notes:setup": "node src/modules/notes/setup-db.js",
+    "test": "node --test src/modules/notes/tests/*.test.cjs"
   },
   "repository": {
     "type": "git",

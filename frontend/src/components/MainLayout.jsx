@@ -2,12 +2,13 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
+import { NotesSearchProvider } from '../features/notes/NotesSearchContext';
 
 export default function MainLayout() {
   const user = JSON.parse(localStorage.getItem('user') || 'null');
 
   return (
-    <div className="d-flex flex-column min-vh-100">
+    <NotesSearchProvider><div className="d-flex flex-column min-vh-100">
       <Navbar />
 
       {/* Prominent banner for unverified account (as required in project rubric) */}
@@ -20,10 +21,10 @@ export default function MainLayout() {
 
       <div className="d-flex flex-grow-1">
         <Sidebar />
-        <main className="flex-grow-1 p-4 bg-body">
+        <main className="flex-grow-1 p-3 p-md-4 bg-body" style={{ minWidth: 0 }}>
           <Outlet />
         </main>
       </div>
-    </div>
+    </div></NotesSearchProvider>
   );
 }

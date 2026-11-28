@@ -4,6 +4,7 @@ import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 import api from '../services/api';
 import { NotesSearchProvider } from '../features/notes/NotesSearchContext';
+import AdvancedHost from '../features/advanced/AdvancedHost';
 
 export default function MainLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -51,6 +52,9 @@ export default function MainLayout() {
             <Outlet />
           </main>
         </div>
+
+        {/* Member 3: note password dialog, share notice, Ask AI, offline banner */}
+        <AdvancedHost />
       </div>
     </NotesSearchProvider>
   );

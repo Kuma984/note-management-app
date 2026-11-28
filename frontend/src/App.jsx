@@ -8,6 +8,8 @@ import VerifyEmail from './features/auth/VerifyEmail';
 import Profile from './features/auth/Profile';
 import Preferences from './features/auth/Preferences';
 import NoteList from './features/notes/NoteList';
+import SharedWithMe from './features/advanced/share/SharedWithMe';
+import SharedNoteEditor from './features/advanced/share/SharedNoteEditor';
 
 // Redirect unauthenticated users to /login immediately
 function ProtectedRoute({ children }) {
@@ -38,7 +40,8 @@ export default function App() {
         >
           <Route path="/" element={<NoteList />} />
           <Route path="/pinned" element={<NoteList />} />
-          <Route path="/shared" element={<NoteList />} />
+          <Route path="/shared" element={<SharedWithMe />} />
+          <Route path="/shared/:id" element={<SharedNoteEditor />} />
           <Route path="/labels" element={<NoteList />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/preferences" element={<Preferences />} />

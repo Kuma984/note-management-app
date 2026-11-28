@@ -31,7 +31,7 @@ async function testConnection() {
     }
 }
 
-// Support both `const db = require('./db')` and `const { pool, testConnection } = require('./db')`
-pool.pool = pool;
-pool.testConnection = testConnection;
-module.exports = pool;
+module.exports = {
+    pool,
+    testConnection
+};

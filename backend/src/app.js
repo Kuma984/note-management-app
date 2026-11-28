@@ -2,9 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const dotenv = require('dotenv');
-const db = require('./config/db');
+const { pool, testConnection } = require('./config/db');
 const authRoutes = require('./modules/auth/authRoutes');
 const { installNotes } = require('./modules/notes/install');
+const advanced = require('./modules/advanced');
 
 dotenv.config();
 
@@ -21,7 +22,8 @@ app.use('/uploads/avatars', express.static(path.join(__dirname, '../uploads/avat
 
 // Routes
 app.use('/api/auth', authRoutes);
-installNotes(app, db);
+installNotes(app, pool);
+advanced.mountRoutes(app);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -33,10 +35,13 @@ app.get('/api/health', (req, res) => {
 });
 
 // Start listening and verify DB connection
-app.listen(PORT, async () => {
+const server = app.listen(PORT, async () => {
     console.log(`Server is running on port ${PORT}`);
     console.log(`API Base URL: http://localhost:${PORT}/api`);
-    await db.testConnection();
+    await testConnection();
 });
+
+// WebSocket real-time collaboration (/ws)
+advanced.attachRealtime(server);
 
 module.exports = app;

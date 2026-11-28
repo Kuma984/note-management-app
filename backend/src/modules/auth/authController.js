@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const db = require('../../config/db');
+const { pool: db } = require('../../config/db');
 const { sendMail } = require('../../config/mailer');
 
 function createToken(user) {
